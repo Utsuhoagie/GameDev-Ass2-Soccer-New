@@ -1,9 +1,10 @@
 import pygame as pg
 import os
+pg.init()
 
 # ----- Fonts ----------------------
 
-#MAIN_FONT = pg.font.SysFont("arial",12)
+FONT = pg.font.SysFont("arial", 64)
 
 
 # ----- Sprites --------------------

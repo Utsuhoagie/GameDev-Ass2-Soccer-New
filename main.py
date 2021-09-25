@@ -1,5 +1,6 @@
 import pygame as pg
 import pymunk as pm
+import pymunk.pygame_util
 import math as mth
 import os
 import random
@@ -7,62 +8,68 @@ from typing import *
 
 from pymunk.vec2d import Vec2d
 from Assets.Assets import *
+from Constants import *
 
 pg.init()
 
 # ----- Window --------------------------------------
 
-WIDTH, HEIGHT = BG_W,BG_H
+# MENU_HEIGHT = 80
 
-border = 20
-midX, midY = WIDTH/2, HEIGHT/2
+# WIDTH, HEIGHT = BG_W, BG_H + MENU_HEIGHT
 
-thickness = 1
+# BORDER = 20
+# MIDX, MIDY = BG_W/2, BG_H/2 + MENU_HEIGHT
+
+# THICKNESS = 7
 
 screen = pg.display.set_mode((WIDTH,HEIGHT))
 pg.display.set_caption("Tiny football")
 
 space = pm.Space()
-# space.gravity = 0,0
 
 
 
 # ----- Colors --------------------------------------
 
-BLACK = (0,0,0)
-GRAY = (100,100,100)
-WHITE = (255,255,255)
+# BLACK = (0,0,0)
+# GRAY = (100,100,100)
+# WHITE = (255,255,255)
 
-RED = (255,0,0)
-GREEN = (0,255,0)
-BLUE = (0,0,255)
-YELLOW = (252,227,0)
-BROWN = (115,67,38)
-LIGHTGREEN = (102,199,28)
+# RED = (255,0,0)
+# GREEN = (0,255,0)
+# BLUE = (0,0,255)
+# YELLOW = (252,227,0)
+# BROWN = (115,67,38)
+# LIGHTGREEN = (102,199,28)
 
 # ----- Fonts ---------------------------------------
 
-MAIN_FONT = pg.font.SysFont("arial",12)
 
 # ----- Audio ---------------------------------------
 
 
 
 # ----- Gameplay ------------------------------------
-FPS = 60
+# FPS = 5
 
-MAX_STAMINA = 50
-HEAL_STAMINA = 2
-SPEND_STAMINA = 4
+# MAX_STAMINA = 50
+# HEAL_STAMINA = 2
+# SPEND_STAMINA = 4
 
-P_SPEED = 220
-P_SPEED_MULTIPLIER = 3
+# P_SPEED = 220 - 100
+# P_SPEED_MULTIPLIER = 4
 
-B_VEL = (-100,100)
-B_VEL_UPPER_LIMIT = 1100
-B_VEL_LOWER_LIMIT = 50
-B_ANIM_SPEED = 0.0006
-FRICTION = 0.997
+# B_VEL = (-0,1)
+# B_VEL_UPPER_LIMIT = 1000
+# B_VEL_LOWER_LIMIT = 50
+# B_ANIM_SPEED = 0.0006
+# B_FRICTION = 0.997
+
+# COL_WALL = 0
+# COL_BALL = 1
+# COL_PLAYER = 2
+# COL_GOAL = 3
 
 # ----- Functions -----------------------------------
 
@@ -76,41 +83,50 @@ class Wall:
     def __init__(self, pointA, pointB, id, color = None):
         self.body = pm.Body(body_type = pm.Body.STATIC)
 
-        self.shape = pm.Segment(self.body, pointA, pointB, thickness)
+        self.shape = pm.Segment(self.body, pointA, pointB, THICKNESS)
         self.shape.elasticity = 1
         self.shape.density = 1
-        self.shape.collision_type = 0
+        self.shape.collision_type = COL_WALL
         self.shape.id = id
-
-
-        if color is not None:
-            self.color = color
-        else:
-            self.color = WHITE
 
         space.add(self.body, self.shape)
 
     def draw(self):
-        pass
-        # a = self.shape.a
-        # b = self.shape.b
-        
-        #pg.draw.line(screen, self.color, a, b, int(self.shape.radius))
+        pg.draw.line(screen, BLUE, self.shape.a, self.shape.b, 5)
+
+
+class Goal(pg.sprite.Sprite):
+    def __init__(self, pointA, pointB, id: int):
+        super().__init__()
+        self.body = pm.Body(body_type = pm.Body.STATIC)
+
+        self.shape = pm.Segment(self.body, pointA, pointB, 2)
+        self.shape.elasticity = 1
+        self.shape.density = 1
+        self.shape.collision_type = COL_GOAL
+        #self.shape.sensor = True
+        self.shape.id = id
+
+        space.add(self.body, self.shape)
+
+    def draw(self):
+        pg.draw.line(screen, RED, self.shape.a, self.shape.b, 5)
 
 
 class Ball(pg.sprite.Sprite):
     def __init__(self, x, y, vel: tuple):
         # pass in (x,y) in pm.Space <=> (0,0) is bottom left
-
+        super().__init__()
         self.body = pm.Body()
         self.body.position = x,y
-        self.body.mass = 50
+        self.body.mass = 1
         self.body.velocity = vel
 
         self.shape = pm.Circle(self.body, BALL_R)
         self.shape.elasticity = 1
         self.shape.density = 1
-        self.shape.collision_type = 1
+        self.shape.collision_type = COL_BALL
+        self.shape.touchedGoal = False
 
         self.frames = BALL
         self.maxFrames = len(self.frames)
@@ -155,20 +171,22 @@ class Ball(pg.sprite.Sprite):
         
         self.image = pg.transform.rotozoom(self.frames[int(self.animIndex)], self.body.angle, 1)
 
-        self.body.velocity *= FRICTION
+        self.body.velocity *= B_FRICTION
         #pg.draw.circle(screen, RED, self.body.position, self.shape.radius)
         screen.blit(self.image, blitPos)
 
 
 
 class Player(pg.sprite.Sprite):
+    score = 0
     def __init__(self, x, y, id: int):
+        super().__init__()
         self.body = pm.Body(body_type = pm.Body.KINEMATIC)
         self.body.position = x, y
 
         self.shape = pm.Circle(self.body, P1_R)
         self.shape.elasticity = 1
-        self.shape.collision_type = 2
+        self.shape.collision_type = COL_PLAYER
 
         self.frames = [P1, P1_CHARGE]
 
@@ -215,6 +233,117 @@ class Player(pg.sprite.Sprite):
 
         #pg.draw.circle(screen, RED, self.body.position, 2)
 
+class ScoreController:
+    def __init__(self):
+        self.score_P1 = 0
+        self.score_P2 = 0
+    
+    def draw(self):
+        scoreSurf = FONT.render("Score P1 = " + str(self.score_P1) + "        Score P2 = " + str(self.score_P2), 1, BLUE)
+        screen.blit(scoreSurf, (MIDX - scoreSurf.get_width()//2, 20))
+
+
+# ----- CollisionHandler functions ---------------------------------------------------
+
+def begin_PlayerWall(arbiter, space, data) -> bool:
+    #print("Collided and handled!")
+
+    wall = arbiter.shapes[1].id
+    
+    if wall == 1:
+        p1.touchL = True
+    elif wall == 2:
+        p1.touchR = True
+    elif wall == 3:
+        p1.touchU = True
+    elif wall == 4:
+        p1.touchD = True
+
+    return True
+
+def separate_PlayerWall(arbiter, space, data):
+    wall = arbiter.shapes[1].id
+
+    if wall == 1:
+        p1.touchL = False
+    elif wall == 2:
+        p1.touchR = False
+    elif wall == 3:
+        p1.touchU = False
+    elif wall == 4:
+        p1.touchD = False
+
+
+def begin_BallGoal(arbiter, space, data) -> bool:
+    
+    #space.bodies.ball.velocity = space.bodies.ball.velocity.scale_to_length(100)
+    
+    #arbiter.shapes[0].body.velocity = arbiter.shapes[0].body.velocity.scale_to_length(80)
+    
+    # arbiter.shapes[0].collision_type = COL_WALL
+    # arbiter.shapes[1].collision_type = COL_WALL
+
+
+    arbiter.shapes[0].touchedGoal = True
+    
+    arbiter.shapes[0].body.velocity = arbiter.shapes[0].body.velocity.scale_to_length(55)
+
+    if arbiter.shapes[1].id == 1:
+        score.score_P2 += 1
+    else:
+        score.score_P1 += 1
+    
+    # print("aaaaaa" + str(arbiter.shapes[0].collision_type))
+
+    
+    #global wallList
+    
+    #wallList = [wallL, wallU, wallD]
+    #space.remove(space.bodies[2])
+    
+
+    # for i in range(0,6):
+    #     arbiter.shapes[0].body.velocity = 0, 0
+    #     arbiter.shapes[0].body.position = arbiter.shapes[0].body.position[0] + (6 - i), arbiter.shapes[0].body.position[1]
+
+
+    return False
+
+def postSolve_BallGoal(arbiter, space, data):
+    
+    
+
+    #txtSurf = MAIN_FONT.render("Goal!", 1, BLUE)
+    # otherFont = pg.font.SysFont("arial", 100)
+    # txtSurf = otherFont.render("Goal!!!", 1, BLUE)
+    # screen.blit(txtSurf, (0,0))
+    # screen.blit(txtSurf, (MIDX - txtSurf.get_width()//2, MIDY - txtSurf.get_height()//2))
+    #print((MIDX - txtSurf.get_width()//2, MIDY - txtSurf.get_height()//2))
+    #pg.time.delay(800)
+
+
+    pass
+    
+def begin_BallWall(arbiter, space, data) -> bool:
+    print(arbiter.shapes[0].touchedGoal)
+    if arbiter.shapes[0].touchedGoal:
+        #arbiter.shapes[0].body.velocity = arbiter.shapes[0].body.velocity.scale_to_length(51)
+        #arbiter.shapes[0] = pm.Circle(arbiter.shapes[0].body, 1)
+        #print(type(arbiter.shapes[0]))
+        return False
+    else:
+        return True
+
+def begin_BallPlayer(arbiter, space, data) -> bool:
+    if arbiter.shapes[0].touchedGoal:
+        #arbiter.shapes[0].body.velocity = arbiter.shapes[0].body.velocity.scale_to_length(55)
+        #arbiter.shapes[0] = pm.Circle(arbiter.shapes[0].body, 1)
+        #print(type(arbiter.shapes[0]))
+        return False
+    else:
+        return True
+
+
 
 # ----- Main game functions ---------------------
 
@@ -224,6 +353,11 @@ def handleInput(player: Player):
     keys = pg.key.get_pressed()
 
     dir = ""
+
+    if keys[pg.K_r]:
+        ball.body.position = MIDX, MIDY
+        ball.body.velocity = 0,0
+        ball.shape.touchedGoal = False
 
     if keys[pg.K_LEFT]:
         dir += "L"
@@ -335,88 +469,90 @@ def handleInput(player: Player):
 
     player.body.velocity = pVel
 
-
 def update():
-    p1.update()
+    p1Group.update()
     ball.update()
 
 def draw():
-    screen.fill(BLACK)
-    screen.blit(BG,(0,0))
+    screen.fill(GREEN)
+    screen.blit(BG, (0,80))
 
     ball.draw()
 
-    p1.draw()
+    #p1Group.draw(screen)
+    for sprite in p1Group.sprites():
+        sprite.draw()
+
+    for goal in goalGroup.sprites():
+        goal.draw()
 
     for wall in wallList:
         wall.draw()
-    #self.wallGroup.draw()
+
+    score.draw()
+
+    print(ball.body.velocity)
 
     pg.display.update()
 
 
-# ----- CollisionHandler functions -----------------------
-
-def beginTouchWall(arbiter, space, data) -> bool:
-    #print("Collided and handled!")
-
-    wall = arbiter.shapes[1].id
-    
-    if wall == 1:
-        p1.touchL = True
-    elif wall == 2:
-        p1.touchR = True
-    elif wall == 3:
-        p1.touchU = True
-    elif wall == 4:
-        p1.touchD = True
-
-    return True
-
-def separateTouchWall(arbiter, space, data):
-    wall = arbiter.shapes[1].id
-
-    if wall == 1:
-        p1.touchL = False
-    elif wall == 2:
-        p1.touchR = False
-    elif wall == 3:
-        p1.touchU = False
-    elif wall == 4:
-        p1.touchD = False
 
 
 # +====================================================================+
 # || ACTUAL GAME                                                      ||
 # +====================================================================+
 
+
 # NOTE: Passing in (x,y) coordinates in pm.Space() <=> (0,0) is bottom left
 # So Pymunk's physics are upside down, but Pygame still blits it correctly
 
 vel = B_VEL
-ball = Ball(midX, 80, vel)
+ball = Ball(MIDX + 300, MIDY, vel)
 
-p1 = Player(150, 240, 11)
+score = ScoreController()
 
-wallL = Wall((border, border), (border, HEIGHT - border), 1)
-wallR = Wall((WIDTH - border, border), (WIDTH - border, HEIGHT - border), 2)
-wallU = Wall((border, border), (WIDTH - border, border), 3)
-wallD = Wall((border, HEIGHT - border), (WIDTH - border, HEIGHT - border), 4)
+p1 = Player(150 + 450, MIDY, 11)
+#p2 = Player(250, 240, 11)
+#p3 = Player(350, 240, 11)
+#pG = Player(450, 240, 11)
 
+wallL = Wall((BORDER, BORDER + MENU_HEIGHT), (BORDER, HEIGHT - BORDER), 1)
+wallR = Wall((WIDTH - BORDER, BORDER + MENU_HEIGHT), (WIDTH - BORDER, HEIGHT - BORDER), 2)
+wallU = Wall((BORDER, BORDER + MENU_HEIGHT), (WIDTH - BORDER, BORDER + MENU_HEIGHT), 3)
+wallD = Wall((BORDER, HEIGHT - BORDER), (WIDTH - BORDER, HEIGHT - BORDER), 4)
+
+goal1 = Goal((BORDER + 5, MIDY - 80), (BORDER + 5, MIDY + 80), 1)
+goal2 = Goal((WIDTH - BORDER - 5, MIDY - 80), (WIDTH - BORDER - 5, MIDY + 80), 2)
+
+
+p1Group = pg.sprite.Group(p1)   #,p2,p3,pG)
+goalGroup = pg.sprite.Group(goal1, goal2)
+#goalList = [goalL, goalR]
 wallList = [wallL, wallR, wallU, wallD]
 #self.wallGroup = pg.sprite.Group(self.wallL, self.wallR, self.wallU, self.wallD)
+
+#debugOptions = pm.pygame_util.DrawOptions(screen)
 
 
 def main():
     run = True
     clock = pg.time.Clock()
-    handler_P1_Wall = space.add_collision_handler(2, 0)
-    handler_P1_Wall.begin = beginTouchWall
-    handler_P1_Wall.separate = separateTouchWall
+    handler_P1_Wall = space.add_collision_handler(COL_PLAYER, COL_WALL)
+    handler_P1_Wall.begin = begin_PlayerWall
+    handler_P1_Wall.separate = separate_PlayerWall
 
-    # handler_P1_Ball = space.add_collision_handler(2, 1)
-    # handler_P1_Ball.begin = beginTouchBall
-    # handler_P1_Ball.post_solve = postSolveTouchBall
+
+    handler_Ball_Goal = space.add_collision_handler(COL_BALL, COL_GOAL)
+    handler_Ball_Goal.begin = begin_BallGoal
+    handler_Ball_Goal.post_solve = postSolve_BallGoal
+
+    handler_Ball_Wall = space.add_collision_handler(COL_BALL, COL_WALL)
+    handler_Ball_Wall.begin = begin_BallWall
+
+    handler_Ball_Player = space.add_collision_handler(COL_BALL, COL_PLAYER)
+    handler_Ball_Player.begin = begin_BallPlayer
+
+
 
     while run:
         space.step(1/FPS)
@@ -429,10 +565,13 @@ def main():
             if event.type == pg.KEYUP and (event.key == pg.K_SPACE):
                 p1.fast = True
 
-        handleInput(p1)
+        for sprite in p1Group.sprites():
+            handleInput(sprite)
+
         update()
 
         draw()
+
 
     pg.quit()
 
