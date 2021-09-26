@@ -188,11 +188,11 @@ def createHandlers():
     handler_Ball_Wall = space.add_collision_handler(COL_BALL, COL_WALL)
     handler_Ball_Wall.begin = begin_BallWall
 
-    handler_Ball_Player1 = space.add_collision_handler(COL_BALL, COL_PLAYER1)
-    handler_Ball_Player1.begin = begin_BallPlayer
+    # handler_Ball_Player1 = space.add_collision_handler(COL_BALL, COL_PLAYER1)
+    # handler_Ball_Player1.begin = begin_BallPlayer
 
-    handler_Ball_Player2 = space.add_collision_handler(COL_BALL, COL_PLAYER1)
-    handler_Ball_Player2.begin = begin_BallPlayer
+    # handler_Ball_Player2 = space.add_collision_handler(COL_BALL, COL_PLAYER1)
+    # handler_Ball_Player2.begin = begin_BallPlayer
 
 def resetBall():
     # reset ball's position to middle of field
@@ -284,10 +284,68 @@ def draw():
 
     pg.display.update()
 
-# --------------------------------------------
+# ----- Game states -----------------------------------------------
+
+state = 'menu'
+
+def gameStateManager():
+    pg.init()
+    execute = True
+    while execute:
+        if state == 'menu':
+            menu()
+        elif state == '2P':
+            main2P()
+        elif state == 'quit':
+            execute = False
+            
+    pg.quit()
 
 
-def main():
+class IntWrapper:
+    def __init__(self, num):
+        self.num = num
+
+def update_menu(num: IntWrapper):
+    num.num += 1
+
+def draw_menu(num: IntWrapper):
+    screen.fill(BLACK)
+
+    txtSurf = FONT.render(str(num.num), 1, WHITE)
+    screen.blit(txtSurf, (50,50))
+
+    pg.display.update()
+
+
+
+
+def menu():
+    run = True
+    clock = pg.time.Clock()
+    num = IntWrapper(0)
+
+    while run:
+        clock.tick(FPS)
+        for event in pg.event.get():
+            if event.type == pg.QUIT or (event.type == pg.KEYDOWN and event.key == pg.K_ESCAPE):
+                global state
+                state = 'quit'
+                return
+            if event.type == pg.MOUSEBUTTONDOWN and event.button == 1:
+                global state
+                state = '2P'
+                return
+        
+        update_menu(num)
+        draw_menu(num)
+        
+
+    pg.quit()
+
+# -------------
+
+def main2P():
     run = True
     clock = pg.time.Clock()
 
@@ -300,6 +358,8 @@ def main():
         for event in pg.event.get():
             if event.type == pg.QUIT or (event.type == pg.KEYDOWN and event.key == pg.K_ESCAPE):
                 run = False
+                global state
+                state = 'menu'
                 break
             if event.type == EVENT_RESET or (event.type == pg.KEYDOWN and event.key == pg.K_r):
                 resetBall()
@@ -311,8 +371,8 @@ def main():
         update()
         draw()
 
-    pg.quit()
 
 
 if __name__ == '__main__':
-    main()
+    while True:
+        gameStateManager()
