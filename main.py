@@ -132,6 +132,7 @@ def begin_BallWall(arbiter, space, data) -> bool:
     if arbiter.shapes[0].touchedGoal:
         return False
     else:
+        BOUNCE.play()
         return True
 
 
@@ -175,8 +176,8 @@ def resetBall():
 
     if ball.body.velocity.length < 300:
         ball.body.velocity = ball.body.velocity.scale_to_length(300)
-    if ball.body.velocity[1] < 100:
-        ball.body.velocity = ball.body.velocity[0], ball.body.velocity[1] + 100
+    if abs(ball.body.velocity[0]) < 100:
+        ball.body.velocity = 100, ball.body.velocity[1]
 
     ball.shape.touchedGoal = False
 
@@ -253,14 +254,17 @@ def draw():
 
     ball.draw()
 
-    for sprite in pGroup.sprites():
-        sprite.draw()
-
     for goal in goalGroup.sprites():
         goal.draw()
 
     for wall in wallList:
         wall.draw()
+
+    pg.draw.line(screen, BROWN, (p1_1.body.position[0], MENU_HEIGHT), (p1_1.body.position[0], HEIGHT), 2)
+    pg.draw.line(screen, BROWN, (p2_1.body.position[0], MENU_HEIGHT), (p2_1.body.position[0], HEIGHT), 2)
+
+    for player in pGroup.sprites():
+        player.draw()
 
     score.draw()
 

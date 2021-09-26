@@ -8,7 +8,7 @@ FONT = pg.font.SysFont("consolas", 48)
 
 
 # ----- Audio ----------------------
-
+BOUNCE = pg.mixer.Sound(os.path.join("Assets","Sounds","bounce.ogg"))
 
 # ----- Sprites --------------------
 
