@@ -1,4 +1,4 @@
-from Imports.Init import *
+from Init import *
 
 class ScoreController:
     def __init__(self):

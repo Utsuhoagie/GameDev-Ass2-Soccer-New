@@ -1,4 +1,4 @@
-from Imports.Init import *
+from Init import *
 
 
 class Player(pg.sprite.Sprite):

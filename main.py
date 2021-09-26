@@ -34,7 +34,7 @@ goalGroup = pg.sprite.Group(goal1, goal2)
 wallList = [wallL, wallR, wallU, wallD]
 
 
-# ----- Classes -------------------------------------
+# ----- Timer -------------------------------------
 
 class Timer:
     def __init__(self):
@@ -141,8 +141,7 @@ def begin_BallPlayer(arbiter, space, data) -> bool:
     else:
         return True
 
-    handler_Ball_Wall = space.add_collision_handler(COL_BALL, COL_WALL)
-    handler_Ball_Wall.begin = begin_BallWall
+
 
 # ----- Main game functions ---------------------
 
@@ -267,8 +266,7 @@ def draw():
 
     pg.display.update()
 
-
-
+# --------------------------------------------
 
 
 def main():

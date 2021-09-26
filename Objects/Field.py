@@ -1,4 +1,4 @@
-from Imports.Init import *
+from Init import *
 
 class Wall:
     def __init__(self, pointA, pointB, id, color = None):

@@ -1,4 +1,4 @@
-from Imports.Init import *
+from Init import *
 
 class Ball(pg.sprite.Sprite):
     def __init__(self, x, y, vel: tuple):
