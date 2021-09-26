@@ -7,12 +7,18 @@ pg.init()
 FONT = pg.font.SysFont("consolas", 48)
 
 
+# ----- Audio ----------------------
+
+
 # ----- Sprites --------------------
 
+# Background
 BG = pg.image.load(os.path.join("Assets","bg.png"))
 BG_W = BG.get_width()
 BG_H = BG.get_height()
 
+
+# Ball
 BALL_1 = pg.image.load(os.path.join("Assets","Sprites","Ball","b1.png"))
 BALL_2 = pg.image.load(os.path.join("Assets","Sprites","Ball","b2.png"))
 BALL_3 = pg.image.load(os.path.join("Assets","Sprites","Ball","b3.png"))
@@ -24,11 +30,11 @@ BALL = [BALL_1, BALL_2, BALL_3, BALL_4, BALL_5, BALL_6]
 
 BALL_R = BALL_1.get_width()//2
 
+
+# Players
 P1 = pg.image.load(os.path.join("Assets","Sprites","Players","blue.png"))
-#P1_CHARGE = pg.image.load(os.path.join("Assets","Sprites","Players","blueCharge.png"))
 P1_R = P1.get_width()//2
 
 P2 = pg.image.load(os.path.join("Assets","Sprites","Players","red.png"))
 P2 = pg.transform.flip(P2, 1, 0)
-#P2_CHARGE = pg.image.load(os.path.join("Assets","Sprites","Players","redCharge.png"))
 P2_R = P1.get_width()//2
