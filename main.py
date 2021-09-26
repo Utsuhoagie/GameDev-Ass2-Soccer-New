@@ -1,3 +1,4 @@
+from Objects.Team import Team
 from Objects.Player import *
 from Objects.Ball import *
 from Objects.Field import *
@@ -19,29 +20,29 @@ score = ScoreController()
             1A - 2A - 3B - 5A - 5B - 3A - 2B - 1B
 """
 
-p1_1  = Player(50, MIDY, 1)
-p1_21 = Player(150, MIDY - 50, 1)
-p1_22 = Player(150, MIDY + 50, 1)
-p1_41 = Player(350, MIDY - 200, 1)
-p1_42 = Player(350, MIDY - 100, 1)
-p1_43 = Player(350, MIDY, 1)
-p1_44 = Player(350, MIDY + 100, 1)
-p1_45 = Player(350, MIDY + 200, 1)
-p1_61 = Player(550, MIDY - 120, 1)
-p1_62 = Player(550, MIDY, 1)
-p1_63 = Player(550, MIDY + 120, 1)
+p1_1  = Player(50, MIDY, 1, COL_PLAYER13)
+p1_21 = Player(150, MIDY - 50, 1, COL_PLAYER12)
+p1_22 = Player(150, MIDY + 50, 1, COL_PLAYER12)
+p1_41 = Player(350, MIDY - 200, 1, COL_PLAYER11)
+p1_42 = Player(350, MIDY - 100, 1, COL_PLAYER11)
+p1_43 = Player(350, MIDY, 1, COL_PLAYER11)
+p1_44 = Player(350, MIDY + 100, 1, COL_PLAYER11)
+p1_45 = Player(350, MIDY + 200, 1, COL_PLAYER11)
+p1_61 = Player(550, MIDY - 120, 1, COL_PLAYER10)
+p1_62 = Player(550, MIDY, 1, COL_PLAYER10)
+p1_63 = Player(550, MIDY + 120, 1, COL_PLAYER10)
 
-p2_1  = Player(WIDTH - 50, MIDY, 2)
-p2_21 = Player(WIDTH - 150, MIDY - 50, 2)
-p2_22 = Player(WIDTH - 150, MIDY + 50, 2)
-p2_41 = Player(WIDTH - 350, MIDY - 200, 2)
-p2_42 = Player(WIDTH - 350, MIDY - 100, 2)
-p2_43 = Player(WIDTH - 350, MIDY, 2)
-p2_44 = Player(WIDTH - 350, MIDY + 100, 2)
-p2_45 = Player(WIDTH - 350, MIDY + 200, 2)
-p2_61 = Player(WIDTH - 550, MIDY - 120, 2)
-p2_62 = Player(WIDTH - 550, MIDY, 2)
-p2_63 = Player(WIDTH - 550, MIDY + 120, 2)
+p2_1  = Player(WIDTH - 50, MIDY, 2, COL_PLAYER23)
+p2_21 = Player(WIDTH - 150, MIDY - 50, 2, COL_PLAYER22)
+p2_22 = Player(WIDTH - 150, MIDY + 50, 2, COL_PLAYER22)
+p2_41 = Player(WIDTH - 350, MIDY - 200, 2, COL_PLAYER21)
+p2_42 = Player(WIDTH - 350, MIDY - 100, 2, COL_PLAYER21)
+p2_43 = Player(WIDTH - 350, MIDY, 2, COL_PLAYER21)
+p2_44 = Player(WIDTH - 350, MIDY + 100, 2, COL_PLAYER21)
+p2_45 = Player(WIDTH - 350, MIDY + 200, 2, COL_PLAYER21)
+p2_61 = Player(WIDTH - 550, MIDY - 120, 2, COL_PLAYER20)
+p2_62 = Player(WIDTH - 550, MIDY, 2, COL_PLAYER20)
+p2_63 = Player(WIDTH - 550, MIDY + 120, 2, COL_PLAYER20)
 
 
 wallL = Wall((BORDER, BORDER + MENU_HEIGHT), (BORDER, HEIGHT - BORDER), 1)
@@ -53,9 +54,21 @@ goal1 = Goal((BORDER + 5, MIDY - 80), (BORDER + 5, MIDY + 80), 1)
 goal2 = Goal((WIDTH - BORDER - 5, MIDY - 80), (WIDTH - BORDER - 5, MIDY + 80), 2)
 
 
-pGroup = pg.sprite.Group(
-    p1_1, p1_21, p1_22, p1_41, p1_42, p1_43, p1_44, p1_45, p1_61, p1_62, p1_63,
-    p2_1, p2_21, p2_22, p2_41, p2_42, p2_43, p2_44, p2_45, p2_61, p2_62, p2_63)
+pGroup10 = pg.sprite.Group(p1_61, p1_62, p1_63)
+pGroup11 = pg.sprite.Group(p1_41, p1_42, p1_43, p1_44, p1_45)
+pGroup12 = pg.sprite.Group(p1_21, p1_22)
+pGroup13 = pg.sprite.Group(p1_1)
+
+pGroup20 = pg.sprite.Group(p2_61, p2_62, p2_63)
+pGroup21 = pg.sprite.Group(p2_41, p2_42, p2_43, p2_44, p2_45)
+pGroup22 = pg.sprite.Group(p2_21, p2_22)
+pGroup23 = pg.sprite.Group(p2_1)
+
+listGroup = [pGroup10, pGroup11, pGroup12, pGroup13, pGroup20, pGroup21, pGroup22, pGroup23]
+
+team1 = Team(screen, pGroup10, pGroup11, pGroup12, pGroup13, Player1Keys)
+team2 = Team(screen, pGroup20, pGroup21, pGroup22, pGroup23, Player2Keys)
+
 goalGroup = pg.sprite.Group(goal1, goal2)
 wallList = [wallL, wallR, wallU, wallD]
 
@@ -102,13 +115,33 @@ timer = Timer()
         check members of the classes in Objects files!!!
 """
 
+def getGroupIdxByCollistionType(col_type):
+    if col_type == COL_PLAYER10:
+        return 0
+    elif col_type == COL_PLAYER11:
+        return 1
+    elif col_type == COL_PLAYER12:
+        return 2
+    elif col_type == COL_PLAYER13:
+        return 3
+    elif col_type == COL_PLAYER20:
+        return 4
+    elif col_type == COL_PLAYER21:
+        return 5
+    elif col_type == COL_PLAYER22:
+        return 6
+    elif col_type == COL_PLAYER23:
+        return 7
 
 def begin_PlayerWall(arbiter, space, data) -> bool:
+    col_type = arbiter.shapes[0].collision_type
+    idx = getGroupIdxByCollistionType(col_type)
+    
 
     wall = arbiter.shapes[1].id
     pid = arbiter.shapes[0].id
 
-    for player in pGroup:    
+    for player in listGroup[idx]:    
         if wall == 1 and player.shape.id == pid:
             player.touchL = True
         elif wall == 2 and player.shape.id == pid:
@@ -121,10 +154,13 @@ def begin_PlayerWall(arbiter, space, data) -> bool:
     return True
 
 def separate_PlayerWall(arbiter, space, data):
+    col_type = arbiter.shapes[0].collision_type
+    idx = getGroupIdxByCollistionType(col_type)
+
     wall = arbiter.shapes[1].id
     pid = arbiter.shapes[0].id
 
-    for player in pGroup:
+    for player in listGroup[idx]:
         if wall == 1 and player.shape.id == pid:
             player.touchL = False
         elif wall == 2 and player.shape.id == pid:
@@ -162,25 +198,48 @@ def begin_BallWall(arbiter, space, data) -> bool:
         return True
 
 
-def begin_BallPlayer(arbiter, space, data) -> bool:
-    if arbiter.shapes[0].touchedGoal:
-        return False
-    else:
-        return True
+# def begin_BallPlayer(arbiter, space, data) -> bool:
+#     if arbiter.shapes[0].touchedGoal:
+#         return False
+#     else:
+#         return True
 
 
 
 # ----- Main game functions ---------------------
 
 def createHandlers():
-    handler_P1_Wall = space.add_collision_handler(COL_PLAYER1, COL_WALL)
-    handler_P1_Wall.begin = begin_PlayerWall
-    handler_P1_Wall.separate = separate_PlayerWall
+    handler_P10_Wall = space.add_collision_handler(COL_PLAYER10, COL_WALL)
+    handler_P10_Wall.begin = begin_PlayerWall
+    handler_P10_Wall.separate = separate_PlayerWall
 
-    handler_P2_Wall = space.add_collision_handler(COL_PLAYER2, COL_WALL)
-    handler_P2_Wall.begin = begin_PlayerWall
-    handler_P2_Wall.separate = separate_PlayerWall
+    handler_P11_Wall = space.add_collision_handler(COL_PLAYER11, COL_WALL)
+    handler_P11_Wall.begin = begin_PlayerWall
+    handler_P11_Wall.separate = separate_PlayerWall
 
+    handler_P12_Wall = space.add_collision_handler(COL_PLAYER12, COL_WALL)
+    handler_P12_Wall.begin = begin_PlayerWall
+    handler_P12_Wall.separate = separate_PlayerWall
+
+    handler_P13_Wall = space.add_collision_handler(COL_PLAYER13, COL_WALL)
+    handler_P13_Wall.begin = begin_PlayerWall
+    handler_P13_Wall.separate = separate_PlayerWall
+
+    handler_P20_Wall = space.add_collision_handler(COL_PLAYER20, COL_WALL)
+    handler_P20_Wall.begin = begin_PlayerWall
+    handler_P20_Wall.separate = separate_PlayerWall
+
+    handler_P21_Wall = space.add_collision_handler(COL_PLAYER21, COL_WALL)
+    handler_P21_Wall.begin = begin_PlayerWall
+    handler_P21_Wall.separate = separate_PlayerWall
+
+    handler_P22_Wall = space.add_collision_handler(COL_PLAYER22, COL_WALL)
+    handler_P22_Wall.begin = begin_PlayerWall
+    handler_P22_Wall.separate = separate_PlayerWall
+
+    handler_P23_Wall = space.add_collision_handler(COL_PLAYER23, COL_WALL)
+    handler_P23_Wall.begin = begin_PlayerWall
+    handler_P23_Wall.separate = separate_PlayerWall
 
     handler_Ball_Goal = space.add_collision_handler(COL_BALL, COL_GOAL)
     handler_Ball_Goal.begin = begin_BallGoal
@@ -258,7 +317,8 @@ def handleInput(player: Player):
 
 
 def update():
-    pGroup.update()
+    team1.update()
+    team2.update()
     ball.update()
     timer.update()
 
@@ -274,11 +334,16 @@ def draw():
     for wall in wallList:
         wall.draw()
 
-    for player in pGroup.sprites():
-        pg.draw.line(screen, BROWN, (player.body.position[0], MENU_HEIGHT), (player.body.position[0], HEIGHT), 1)
+    team1.draw()
+    team2.draw()
+    # for player in pGroup.sprites():
+    #     pg.draw.line(screen, BROWN, (player.body.position[0], MENU_HEIGHT), (player.body.position[0], HEIGHT), 1)
 
-    for player in pGroup.sprites():
-        player.draw()
+    # for player in pGroup.sprites():
+    #     player.draw()
+    for group in listGroup:
+        for player in group.sprites():
+            player.draw()
 
     score.draw()
 
@@ -365,8 +430,8 @@ def main2P():
                 resetBall()
             
 
-        for sprite in pGroup.sprites():
-            handleInput(sprite)
+        # for sprite in pGroup.sprites():
+        #     handleInput(sprite)
 
         update()
         draw()
