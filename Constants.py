@@ -26,8 +26,10 @@ LIGHTGREEN = (102,199,28)
 # ----- Gameplay ------------------------------------
 FPS = 60
 
+EVENT_RESET = pg.USEREVENT + 1
+
 MAX_STAMINA = 50
-HEAL_STAMINA = 2
+HEAL_STAMINA = 4
 SPEND_STAMINA = 4
 
 P_SPEED = 220
