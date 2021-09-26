@@ -141,6 +141,8 @@ def begin_BallPlayer(arbiter, space, data) -> bool:
     else:
         return True
 
+    handler_Ball_Wall = space.add_collision_handler(COL_BALL, COL_WALL)
+    handler_Ball_Wall.begin = begin_BallWall
 
 # ----- Main game functions ---------------------
 
