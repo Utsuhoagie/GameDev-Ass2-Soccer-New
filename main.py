@@ -174,7 +174,7 @@ def separate_PlayerWall(arbiter, space, data):
 def begin_BallGoal(arbiter, space, data) -> bool:
 
     arbiter.shapes[0].touchedGoal = True
-    arbiter.shapes[0].body.velocity = arbiter.shapes[0].body.velocity.scale_to_length(55)
+    arbiter.shapes[0].body.velocity = arbiter.shapes[0].body.velocity.scale_to_length(52)
 
     if arbiter.shapes[1].id == 1:
         score.score_P2 += 1
@@ -198,11 +198,11 @@ def begin_BallWall(arbiter, space, data) -> bool:
         return True
 
 
-# def begin_BallPlayer(arbiter, space, data) -> bool:
-#     if arbiter.shapes[0].touchedGoal:
-#         return False
-#     else:
-#         return True
+def begin_BallPlayer(arbiter, space, data) -> bool:
+    if arbiter.shapes[0].touchedGoal:
+        return False
+    else:
+        return True
 
 
 
@@ -267,53 +267,6 @@ def resetBall():
     ball.shape.touchedGoal = False
 
 
-def handleInput(player: Player):
-
-    pVel = player.body.velocity
-    pid = player.shape.id
-    keys = pg.key.get_pressed()
-
-    dir = ""
-
-    # TODO: make this change columns
-    if (keys[pg.K_a] and pid == 1) or (keys[pg.K_LEFT] and pid == 2):
-        pass
-    if (keys[pg.K_d] and pid == 1) or (keys[pg.K_RIGHT] and pid == 2):
-        pass
-
-    if (keys[pg.K_w] and pid == 1) or (keys[pg.K_UP] and pid == 2):
-        dir += "U"
-        if not player.touchU:
-            pVel = 0,-P_SPEED
-        else:
-            pVel = 0,0
-    if (keys[pg.K_s] and pid == 1) or (keys[pg.K_DOWN] and pid == 2):
-        dir += "D"
-        if not player.touchD:
-            pVel = 0,P_SPEED
-        else:
-            pVel = 0,0
-
-    if dir in ["","UD"]:
-        pVel = 0,0
-
-
-    # speed up
-    if ((keys[pg.K_SPACE] and pid == 1) or (keys[pg.K_RCTRL] and pid == 2)) and (player.stamina >= 0):
-        player.fast = True
-        player.heldFast = True
-    else:
-        if not keys[pg.K_SPACE]:
-            player.heldFast = False
-        player.fast = False
-
-    if player.fast:
-        pVel = pVel[0] * P_SPEED_MULTIPLIER, pVel[1] * P_SPEED_MULTIPLIER
-        player.stamina -= SPEND_STAMINA
-
-
-    # set player's velocity
-    player.body.velocity = pVel
 
 
 def update():
@@ -349,68 +302,152 @@ def draw():
 
     pg.display.update()
 
-# ----- Game states -----------------------------------------------
 
-state = 'menu'
 
-def gameStateManager():
-    pg.init()
-    execute = True
-    while execute:
-        if state == 'menu':
-            menu()
-        elif state == '2P':
-            main2P()
-        elif state == 'quit':
-            execute = False
+# ----- Game states -----------------------------------------------------------------------
+
+
+# state = 'menu'
+
+# def gameStateManager():
+#     #pg.init()
+#     execute = True
+#     while execute:
+#         pg.init()
+#         if state == 'menu':
+#             menu()
+#         elif state == '2P':
+#             main2P()
             
-    pg.quit()
+#     pg.quit()
 
 
-class IntWrapper:
-    def __init__(self, num):
-        self.num = num
+# class IntWrapper:
+#     def __init__(self, num):
+#         self.num = num
 
-def update_menu(num: IntWrapper):
-    num.num += 1
+# def update_menu(num: IntWrapper):
+#     num.num += 1
 
-def draw_menu(num: IntWrapper):
+# def draw_menu(num: IntWrapper):
+#     screen.fill(BLACK)
+
+#     txtSurf = FONT.render(str(num.num), 1, WHITE)
+#     screen.blit(txtSurf, (50,50))
+
+#     pg.display.update()
+
+# def menu():
+#     run = True
+#     clock = pg.time.Clock()
+#     num = IntWrapper(0)
+
+#     while run:
+#         clock.tick(FPS)
+#         for event in pg.event.get():
+#             if event.type == pg.QUIT or (event.type == pg.KEYDOWN and event.key == pg.K_ESCAPE):
+#                 run = False
+#                 pg.quit()
+#                 sys.exit()
+#             if event.type == pg.MOUSEBUTTONDOWN and event.button == 1:
+#                 global state
+#                 state = '2P'
+#                 return
+        
+#         update_menu(num)
+#         draw_menu(num)
+        
+
+#     pg.quit()
+
+# # -------------
+
+# def main2P():
+#     run = True
+#     clock = pg.time.Clock()
+
+#     createHandlers()
+
+#     while run:
+#         space.step(1/FPS)
+#         clock.tick(FPS)
+
+#         for event in pg.event.get():
+#             if event.type == pg.QUIT or (event.type == pg.KEYDOWN and event.key == pg.K_ESCAPE):
+#                 run = False
+#                 global state
+#                 state = 'menu'
+#                 break
+#             if event.type == EVENT_RESET or (event.type == pg.KEYDOWN and event.key == pg.K_r):
+#                 resetBall()
+#         # for sprite in pGroup.sprites():
+#         #     handleInput(sprite)
+
+#         update()
+#         draw()
+
+#     pg.quit()
+
+
+# if __name__ == '__main__':
+#     # main2P()
+#     gameStateManager()
+
+def update_menu(num):
+    pass
+
+def draw_menu(button_2P):
     screen.fill(BLACK)
+    screen.blit(MENU_BG, (0,0))
 
-    txtSurf = FONT.render(str(num.num), 1, WHITE)
-    screen.blit(txtSurf, (50,50))
+
+    txtSurf = TITLE_FONT.render("Tiny Football", 1, BLACK)
+    txtRect = pg.Rect(0,0, txtSurf.get_width(), txtSurf.get_height())
+
+    pg.draw.rect(screen, BLACK, pg.Rect(40, 50, txtRect.width + 60, txtRect.height + 50))
+    pg.draw.rect(screen, WHITE, pg.Rect(50, 60, txtRect.width + 40, txtRect.height + 30))
+
+    screen.blit(txtSurf, (70, 70))
+
+    button2PSurf = BUTTON_FONT.render("2-Player", 1, BLACK)
+
+    pg.draw.rect(screen, GRAY, button_2P)
+    screen.blit(button2PSurf, (button_2P.x + 15, button_2P.y + 15))
+
+
+    
 
     pg.display.update()
-
-
-
 
 def menu():
     run = True
     clock = pg.time.Clock()
-    num = IntWrapper(0)
+    i = 0
+
+    button_2P = pg.Rect(100, 300, 180, 80)
+    
 
     while run:
         clock.tick(FPS)
+
         for event in pg.event.get():
             if event.type == pg.QUIT or (event.type == pg.KEYDOWN and event.key == pg.K_ESCAPE):
-                global state
-                state = 'quit'
-                return
+                run = False
+                break
             if event.type == pg.MOUSEBUTTONDOWN and event.button == 1:
-                global state
-                state = '2P'
-                return
+                mPos = pg.mouse.get_pos()
+                if button_2P.collidepoint(mPos):
+                    main()
+                # main()
         
-        update_menu(num)
-        draw_menu(num)
-        
+        i += 1
+        update_menu(i)
+        draw_menu(button_2P)
 
     pg.quit()
 
-# -------------
 
-def main2P():
+def main():
     run = True
     clock = pg.time.Clock()
 
@@ -423,21 +460,17 @@ def main2P():
         for event in pg.event.get():
             if event.type == pg.QUIT or (event.type == pg.KEYDOWN and event.key == pg.K_ESCAPE):
                 run = False
-                global state
-                state = 'menu'
                 break
             if event.type == EVENT_RESET or (event.type == pg.KEYDOWN and event.key == pg.K_r):
                 resetBall()
-            
-
         # for sprite in pGroup.sprites():
         #     handleInput(sprite)
 
         update()
         draw()
 
+    
 
 
 if __name__ == '__main__':
-    while True:
-        gameStateManager()
+    menu()

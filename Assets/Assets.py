@@ -5,7 +5,8 @@ pg.init()
 # ----- Fonts ----------------------
 
 FONT = pg.font.SysFont("consolas", 48)
-
+TITLE_FONT = pg.font.Font(os.path.join("Assets","SF Atarian System.ttf"), 72)
+BUTTON_FONT = pg.font.Font(os.path.join("Assets","SF Atarian System.ttf"), 50)
 
 # ----- Audio ----------------------
 BOUNCE = pg.mixer.Sound(os.path.join("Assets","Sounds","bounce.ogg"))
@@ -16,6 +17,8 @@ BOUNCE = pg.mixer.Sound(os.path.join("Assets","Sounds","bounce.ogg"))
 BG = pg.image.load(os.path.join("Assets","bg.png"))
 BG_W = BG.get_width()
 BG_H = BG.get_height()
+
+MENU_BG = pg.image.load(os.path.join("Assets","menu_bg.png"))
 
 
 # Ball
