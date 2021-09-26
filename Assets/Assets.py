@@ -4,7 +4,7 @@ pg.init()
 
 # ----- Fonts ----------------------
 
-FONT = pg.font.SysFont("arial", 64)
+FONT = pg.font.SysFont("consolas", 48)
 
 
 # ----- Sprites --------------------
