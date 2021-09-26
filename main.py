@@ -13,11 +13,35 @@ ball = Ball(MIDX, MIDY, B_VEL)
 
 score = ScoreController()
 
-p1_1 = Player(200, MIDY + 50, 1)
-p1_2 = Player(200, MIDY - 50, 1)
+"""
+    Layout: 
+            50   150  250  350  450  550  650  750  -> (x)
+            1A - 2A - 3B - 5A - 5B - 3A - 2B - 1B
+"""
 
-p2_1 = Player(WIDTH - 200, MIDY + 50, 2)
-p2_2 = Player(WIDTH - 200, MIDY - 50, 2)
+p1_1  = Player(50, MIDY, 1)
+p1_21 = Player(150, MIDY - 50, 1)
+p1_22 = Player(150, MIDY + 50, 1)
+p1_41 = Player(350, MIDY - 200, 1)
+p1_42 = Player(350, MIDY - 100, 1)
+p1_43 = Player(350, MIDY, 1)
+p1_44 = Player(350, MIDY + 100, 1)
+p1_45 = Player(350, MIDY + 200, 1)
+p1_61 = Player(550, MIDY - 120, 1)
+p1_62 = Player(550, MIDY, 1)
+p1_63 = Player(550, MIDY + 120, 1)
+
+p2_1  = Player(WIDTH - 50, MIDY, 2)
+p2_21 = Player(WIDTH - 150, MIDY - 50, 2)
+p2_22 = Player(WIDTH - 150, MIDY + 50, 2)
+p2_41 = Player(WIDTH - 350, MIDY - 200, 2)
+p2_42 = Player(WIDTH - 350, MIDY - 100, 2)
+p2_43 = Player(WIDTH - 350, MIDY, 2)
+p2_44 = Player(WIDTH - 350, MIDY + 100, 2)
+p2_45 = Player(WIDTH - 350, MIDY + 200, 2)
+p2_61 = Player(WIDTH - 550, MIDY - 120, 2)
+p2_62 = Player(WIDTH - 550, MIDY, 2)
+p2_63 = Player(WIDTH - 550, MIDY + 120, 2)
 
 
 wallL = Wall((BORDER, BORDER + MENU_HEIGHT), (BORDER, HEIGHT - BORDER), 1)
@@ -29,7 +53,9 @@ goal1 = Goal((BORDER + 5, MIDY - 80), (BORDER + 5, MIDY + 80), 1)
 goal2 = Goal((WIDTH - BORDER - 5, MIDY - 80), (WIDTH - BORDER - 5, MIDY + 80), 2)
 
 
-pGroup = pg.sprite.Group(p1_1, p1_2, p2_1, p2_2)
+pGroup = pg.sprite.Group(
+    p1_1, p1_21, p1_22, p1_41, p1_42, p1_43, p1_44, p1_45, p1_61, p1_62, p1_63,
+    p2_1, p2_21, p2_22, p2_41, p2_42, p2_43, p2_44, p2_45, p2_61, p2_62, p2_63)
 goalGroup = pg.sprite.Group(goal1, goal2)
 wallList = [wallL, wallR, wallU, wallD]
 
@@ -190,41 +216,28 @@ def handleInput(player: Player):
 
     dir = ""
 
+    # TODO: make this change columns
     if (keys[pg.K_a] and pid == 1) or (keys[pg.K_LEFT] and pid == 2):
-        #dir += "L"
-
-        # TODO: make this change columns
         pass
     if (keys[pg.K_d] and pid == 1) or (keys[pg.K_RIGHT] and pid == 2):
-        #dir += "R"
-
-        # TODO: make this change columns
         pass
+
     if (keys[pg.K_w] and pid == 1) or (keys[pg.K_UP] and pid == 2):
         dir += "U"
-    if (keys[pg.K_s] and pid == 1) or (keys[pg.K_DOWN] and pid == 2):
-        dir += "D"
-
-
-    if dir in ["U","LRU"]:
-        # player.body.angle = mth.radians(90)
-        # player.angle = 90
         if not player.touchU:
             pVel = 0,-P_SPEED
         else:
             pVel = 0,0
-
-    if dir in ["D","LRD"]:
-        # player.body.angle = mth.radians(-90)
-        # player.angle = -90
+    if (keys[pg.K_s] and pid == 1) or (keys[pg.K_DOWN] and pid == 2):
+        dir += "D"
         if not player.touchD:
             pVel = 0,P_SPEED
         else:
             pVel = 0,0
 
-
-    if dir in ["","LR","UD","LRUD"]:
+    if dir in ["","UD"]:
         pVel = 0,0
+
 
     # speed up
     if ((keys[pg.K_SPACE] and pid == 1) or (keys[pg.K_RCTRL] and pid == 2)) and (player.stamina >= 0):
@@ -238,6 +251,7 @@ def handleInput(player: Player):
     if player.fast:
         pVel = pVel[0] * P_SPEED_MULTIPLIER, pVel[1] * P_SPEED_MULTIPLIER
         player.stamina -= SPEND_STAMINA
+
 
     # set player's velocity
     player.body.velocity = pVel
@@ -260,8 +274,8 @@ def draw():
     for wall in wallList:
         wall.draw()
 
-    pg.draw.line(screen, BROWN, (p1_1.body.position[0], MENU_HEIGHT), (p1_1.body.position[0], HEIGHT), 2)
-    pg.draw.line(screen, BROWN, (p2_1.body.position[0], MENU_HEIGHT), (p2_1.body.position[0], HEIGHT), 2)
+    for player in pGroup.sprites():
+        pg.draw.line(screen, BROWN, (player.body.position[0], MENU_HEIGHT), (player.body.position[0], HEIGHT), 1)
 
     for player in pGroup.sprites():
         player.draw()
