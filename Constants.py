@@ -1,4 +1,6 @@
 from Assets.Assets import *
+from enum import Enum
+import pygame as pg
 
 MENU_HEIGHT = 80
 
@@ -43,9 +45,32 @@ B_FRICTION = 0.998
 
 COL_WALL = 0
 COL_BALL = 1
-COL_PLAYER1 = 2
-COL_PLAYER2 = 3
+
+COL_PLAYER10 = 10
+COL_PLAYER11 = 11
+COL_PLAYER12 = 12
+COL_PLAYER13 = 13
+
+COL_PLAYER20 = 20
+COL_PLAYER21 = 21
+COL_PLAYER22 = 22
+COL_PLAYER23 = 23
+
 COL_GOAL = 4
 
 GROUP_WALL = 1
 GROUP_BALL = 2
+
+# Keys caps
+
+class Player1Keys(int):
+    UP = pg.K_a
+    DOWN = pg.K_s
+    LEFT = pg.K_a
+    RIGHT = pg.K_d
+
+class Player2Keys(int):
+    UP = pg.K_UP
+    DOWN = pg.K_DOWN
+    LEFT = pg.K_LEFT
+    RIGHT = pg.K_RIGHT
