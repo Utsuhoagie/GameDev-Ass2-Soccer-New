@@ -28,6 +28,7 @@ class IfElseAI:
             if idx == self._columnToGo:
                 self._state = AIState.MOVE_PLAYER
             else:
+                print(self._columnToGo)
                 if (self._columnToGo < idx):
                     self._team.goTo('left')
                 else:
@@ -69,3 +70,4 @@ class IfElseAI:
         for idx in range(0, len(self._team.column)):
             if self._team.column[idx].sprites()[0].body.position[0] > self._ball.body.position[0]:
                 return idx
+        return 3
