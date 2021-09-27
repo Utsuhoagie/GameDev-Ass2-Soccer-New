@@ -79,7 +79,8 @@ class Team:
     def draw(self):
         firstPlayerInColumn =  self.column[self.curColumnTarget].sprites()[0].body
 
-        pg.draw.line(self.screen, BROWN, (firstPlayerInColumn.position[0], MENU_HEIGHT), (firstPlayerInColumn.position[0], HEIGHT), 1)
+        color = LIGHTBLUE if self.keyUse == Player1Keys else ORANGE
+        pg.draw.line(self.screen, color, (firstPlayerInColumn.position[0], MENU_HEIGHT), (firstPlayerInColumn.position[0], HEIGHT), 3)
 
     '''
     FOR AI
