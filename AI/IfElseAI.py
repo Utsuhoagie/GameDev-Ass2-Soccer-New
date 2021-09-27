@@ -1,5 +1,5 @@
 from math import inf
-from typing import Tuple
+from typing import *
 from Objects.Ball import Ball
 from Objects.Team import Team
 from enum import Enum
@@ -23,23 +23,29 @@ class IfElseAI:
 
     def update(self):
         # execute state
-        if self._state == AIState.GO_TO_COLUMN:
-            idx = self._team.getCurIdx()
-            if idx == self._columnToGo:
-                self._state = AIState.MOVE_PLAYER
-            else:
-                print(self._columnToGo)
-                if (self._columnToGo < idx):
-                    self._team.goTo('left')
+        if not self._ball.shape.touchedGoal:
+            if self._state == AIState.GO_TO_COLUMN:
+                idx = self._team.getCurIdx()
+                if idx == self._columnToGo:
+                    self._state = AIState.MOVE_PLAYER
                 else:
-                    self._team.goTo('right')
-        elif self._state == AIState.MOVE_PLAYER:
+                    print(self._columnToGo)
+                    if (self._columnToGo < idx):
+                        self._team.goTo('left')
+                    else:
+                        self._team.goTo('right')
+            elif self._state == AIState.MOVE_PLAYER:
+                group = self._team.getCurrentPlayerGroup()
+                direct = self._findDirectionInGroupNearTheBall(group.sprites())
+                
+                for player in group.sprites():
+                    player.goTo(direct)
+        else:
             group = self._team.getCurrentPlayerGroup()
-            direct = self._findDirectionInGroupNearTheBall(group.sprites())
-            
+
             for player in group.sprites():
-                player.goTo(direct)
-            
+                player.body.velocity = 0,0
+
 
         # behavior
         # go to the column cleareast with the ball
@@ -49,7 +55,7 @@ class IfElseAI:
             self._state = AIState.GO_TO_COLUMN
         
 
-    def _findDirectionInGroupNearTheBall(self, group: list[pg.sprite.Sprite]) -> str:
+    def _findDirectionInGroupNearTheBall(self, group: List[pg.sprite.Sprite]) -> str:
         nearestIdx = 0
         direction = ''
         deltaY = inf
