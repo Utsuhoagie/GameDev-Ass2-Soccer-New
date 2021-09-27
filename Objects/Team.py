@@ -80,3 +80,29 @@ class Team:
         firstPlayerInColumn =  self.column[self.curColumnTarget].sprites()[0].body
 
         pg.draw.line(self.screen, BROWN, (firstPlayerInColumn.position[0], MENU_HEIGHT), (firstPlayerInColumn.position[0], HEIGHT), 1)
+
+    '''
+    FOR AI
+    '''
+    def getCurIdx(self):
+        return self.curColumnTarget
+
+    def goTo(self, direction):
+        if direction == 'left':
+            if (self.curColumnTarget > 0):
+                self.previousColumnTarget = self.curColumnTarget
+                self.curColumnTarget -= 1
+
+        elif direction == 'right':
+            if (self.curColumnTarget < len(self.column)- 1):
+                self.previousColumnTarget = self.curColumnTarget
+                self.curColumnTarget += 1
+
+        # set zerovelocity before switch to other column
+        if self.previousColumnTarget != self.curColumnTarget:
+            for playerInCol in self.column[self.previousColumnTarget]:
+                playerInCol.setZeroVelocity()
+            self.previousColumnTarget = self.curColumnTarget
+
+    def getCurrentPlayerGroup(self) -> pg.sprite.Group:
+        return self.column[self.curColumnTarget]

@@ -1,3 +1,4 @@
+from AI.IfElseAI import IfElseAI
 from Objects.Team import Team
 from Objects.Player import *
 from Objects.Ball import *
@@ -78,6 +79,7 @@ team2 = Team(screen, pGroup20, pGroup21, pGroup22, pGroup23, Player2Keys)
 goalGroup = pg.sprite.Group(goal1, goal2)
 wallList = [wallL, wallR, wallU, wallD]
 
+AI = IfElseAI(team2, ball)
 
 # ----- Timer -------------------------------------
 
@@ -267,6 +269,7 @@ def update_AI():
 
     team1.update()
     #team2.update()
+    AI.update()
     
     ball.update()
     timer.update()

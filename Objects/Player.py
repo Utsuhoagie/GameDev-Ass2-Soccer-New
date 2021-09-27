@@ -92,3 +92,26 @@ class Player(pg.sprite.Sprite):
 
         # set player's velocity
         self.body.velocity = pVel
+
+    '''
+    FOR AI
+    '''
+    def goTo(self, direction):
+        pVel = self.body.velocity
+
+        if direction == 'up':
+            if not self.touchU:
+                pVel = 0,-P_SPEED
+            else:
+                pVel = 0,0
+        elif direction == 'down':
+            if not self.touchD:
+                pVel = 0,P_SPEED
+            else:
+                pVel = 0,0
+
+        else:
+            pVel = 0,0
+
+        # set player's velocity
+        self.body.velocity = pVel
