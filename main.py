@@ -273,24 +273,26 @@ def update_AI():
 
 def drawDash():
     curCol1 = team1.column[team1.curColumnTarget]
-    dashSize1 = DASH_BLUE.get_width(), int(curCol1.sprites()[len(curCol1) - 1].body.position[1] - curCol1.sprites()[0].body.position[1]) + P1.get_height() + 20
+    dashSize1 = DASH_BLUE.get_width(), P1.get_height() + 20
     scaledDash1 = pg.transform.scale(DASH_BLUE, dashSize1)
-    if curCol1.sprites()[0].fast:
-        if curCol1.sprites()[0].body.velocity[1] < 0:
-            screen.blit(scaledDash1, (curCol1.sprites()[0].body.position[0] - P1_R, curCol1.sprites()[0].body.position[1]))
-        else:
-            scaledDash1 = pg.transform.flip(scaledDash1, 0, 1)
-            screen.blit(scaledDash1, (curCol1.sprites()[0].body.position[0] - P1_R, curCol1.sprites()[0].body.position[1] - P1.get_height() - 20))
+    for player1 in curCol1.sprites():
+        if player1.fast:
+            if player1.body.velocity[1] < 0:
+                screen.blit(scaledDash1, (player1.body.position[0] - P1_R, player1.body.position[1]))
+            else:
+                scaledDash1 = pg.transform.flip(scaledDash1, 0, 1)
+                screen.blit(scaledDash1, (player1.body.position[0] - P1_R, player1.body.position[1] - P1.get_height() - 20))
 
     curCol2 = team2.column[team2.curColumnTarget]
-    dashSize2 = DASH_RED.get_width(), int(curCol2.sprites()[len(curCol2) - 1].body.position[1] - curCol2.sprites()[0].body.position[1]) + P2.get_height() + 20
+    dashSize2 = DASH_RED.get_width(), P2.get_height() + 20
     scaledDash2 = pg.transform.scale(DASH_RED, dashSize2)
-    if curCol2.sprites()[0].fast:
-        if curCol2.sprites()[0].body.velocity[1] < 0:
-            screen.blit(scaledDash2, (curCol2.sprites()[0].body.position[0] - P2_R, curCol2.sprites()[0].body.position[1]))
-        else:
-            scaledDash2 = pg.transform.flip(scaledDash2, 0, 1)
-            screen.blit(scaledDash2, (curCol2.sprites()[0].body.position[0] - P2_R, curCol2.sprites()[0].body.position[1] - P2.get_height() - 20))
+    for player2 in curCol2.sprites():
+        if player2.fast:
+            if player2.body.velocity[1] < 0:
+                screen.blit(scaledDash2, (player2.body.position[0] - P2_R, player2.body.position[1]))
+            else:
+                scaledDash2 = pg.transform.flip(scaledDash2, 0, 1)
+                screen.blit(scaledDash2, (player2.body.position[0] - P2_R, player2.body.position[1] - P2.get_height() - 20))
 
 
 def draw():
