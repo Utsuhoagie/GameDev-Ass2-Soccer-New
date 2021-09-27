@@ -11,5 +11,8 @@ class ScoreController:
     
     def draw(self):
         # TODO: Should draw something that looks better
-        scoreSurf = FONT.render("Score P1 = " + str(self.score_P1) + "    Score P2 = " + str(self.score_P2), 1, BLUE)
-        screen.blit(scoreSurf, (MIDX - scoreSurf.get_width()//2, 20))
+        score1Surf = FONT.render("Score P1 = " + str(self.score_P1), 1, LIGHTBLUE)
+        screen.blit(score1Surf, (40, 20))
+
+        score2Surf = FONT.render("Score P2 = " + str(self.score_P2), 1, ORANGE)
+        screen.blit(score2Surf, (WIDTH - 40 - score1Surf.get_width(), 20))

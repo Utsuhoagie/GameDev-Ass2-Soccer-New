@@ -88,9 +88,6 @@ class Timer:
     def set(self, n: int):
         self.timer = n
 
-    def timeUp(self) -> bool:
-        return self.timer == 0
-
     def update(self):
         if self.timer:
             self.timer -= 1
@@ -297,7 +294,7 @@ def drawDash():
 
 
 def draw():
-    screen.fill(GREEN)
+    screen.fill(DARKGREEN)
     screen.blit(BG, (0,80))
 
     ball.draw()
