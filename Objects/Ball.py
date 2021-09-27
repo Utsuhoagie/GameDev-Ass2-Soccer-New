@@ -58,8 +58,5 @@ class Ball(pg.sprite.Sprite):
         # slow ball down
         self.body.velocity *= B_FRICTION
 
-        # For debug! Draws the Body and Shape of the ball itself in Pymunk
-        # pg.draw.circle(screen, RED, self.body.position, self.shape.radius)
-        
         
         screen.blit(self.image, blitPos)

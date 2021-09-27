@@ -3,7 +3,8 @@ import pymunk as pm
 import pymunk.pygame_util
 import math as mth
 import os
-import random
+import random as rd
+import sys
 from typing import *
 
 from pymunk.vec2d import Vec2d

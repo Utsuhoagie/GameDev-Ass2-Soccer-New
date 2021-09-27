@@ -4,6 +4,10 @@ class ScoreController:
     def __init__(self):
         self.score_P1 = 0
         self.score_P2 = 0
+
+    def reset(self):
+        self.score_P1 = 0
+        self.score_P2 = 0
     
     def draw(self):
         # TODO: Should draw something that looks better

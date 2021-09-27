@@ -1,6 +1,7 @@
 from Assets.Assets import *
 from enum import Enum
 import pygame as pg
+import random
 
 MENU_HEIGHT = 80
 
@@ -31,13 +32,12 @@ FPS = 60
 EVENT_RESET = pg.USEREVENT + 1
 
 MAX_STAMINA = 50
-HEAL_STAMINA = 4
+HEAL_STAMINA = 5
 SPEND_STAMINA = 4
 
 P_SPEED = 220
 P_SPEED_MULTIPLIER = 4
 
-B_VEL = (-350,0)
 B_VEL_UPPER_LIMIT = 1200
 B_VEL_LOWER_LIMIT = 50
 B_ANIM_SPEED = 0.0006

@@ -15,7 +15,8 @@ class Wall:
     def draw(self):
         # NOTE: Only draw for debugging
         # No need to draw
-        pg.draw.line(screen, BLUE, self.shape.a, self.shape.b, 5)
+        #pg.draw.line(screen, BLUE, self.shape.a, self.shape.b, 5)
+        pass
 
 
 class Goal(pg.sprite.Sprite):
@@ -35,4 +36,5 @@ class Goal(pg.sprite.Sprite):
     def draw(self):
         # NOTE: Only draw for debugging
         # No need to draw
-        pg.draw.line(screen, RED, self.shape.a, self.shape.b, 5)
+        #pg.draw.line(screen, RED, self.shape.a, self.shape.b, 5)
+        pass
