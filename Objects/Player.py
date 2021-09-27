@@ -77,11 +77,11 @@ class Player(pg.sprite.Sprite):
 
 
         # speed up
-        if ((keys[pg.K_SPACE] and pid == 1) or (keys[pg.K_RCTRL] and pid == 2)) and (self.stamina >= 0):
+        if ((keys[pg.K_SPACE] and pid == 1) or (keys[pg.K_RCTRL] and pid == 2)) and (self.stamina >= 0) and pVel != (0,0):
             self.fast = True
             self.heldFast = True
         else:
-            if not keys[pg.K_SPACE]:
+            if (not keys[pg.K_SPACE] and pid == 1) or (not keys[pg.K_RCTRL] and pid == 2):
                 self.heldFast = False
             self.fast = False
 

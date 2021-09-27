@@ -10,7 +10,7 @@ BUTTON_FONT = pg.font.Font(os.path.join("Assets","SF Atarian System.ttf"), 50)
 
 # ----- Audio ----------------------
 BOUNCE = pg.mixer.Sound(os.path.join("Assets","Sounds","bounce.ogg"))
-
+GOAL = pg.mixer.Sound(os.path.join("Assets","Sounds","goal.ogg"))
 # ----- Sprites --------------------
 
 # Background
@@ -41,3 +41,6 @@ P1_R = P1.get_width()//2
 P2 = pg.image.load(os.path.join("Assets","Sprites","Players","red.png"))
 P2 = pg.transform.flip(P2, 1, 0)
 P2_R = P1.get_width()//2
+
+DASH_BLUE = pg.image.load(os.path.join("Assets","Sprites","Players","dashBlue.png"))
+DASH_RED = pg.image.load(os.path.join("Assets","Sprites","Players","dashRed.png"))

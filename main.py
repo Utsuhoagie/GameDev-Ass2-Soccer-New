@@ -170,6 +170,7 @@ def begin_BallGoal(arbiter, space, data) -> bool:
     else:
         score.score_P1 += 1
     
+    GOAL.play()
     timer.set(90)   # pause for 1.5s
 
     return False    # no collision
@@ -186,6 +187,11 @@ def begin_BallWall(arbiter, space, data) -> bool:
         BOUNCE.play()
         return True
 
+def begin_BallPlayer(arbiter, space, data) -> bool:
+    if arbiter.shapes[0].touchedGoal:
+        return False
+    else:
+        return True
 
 
 # ----- Main game functions ---------------------
@@ -207,6 +213,7 @@ def createHandlers():
     handler_P13_Wall.begin = begin_PlayerWall
     handler_P13_Wall.separate = separate_PlayerWall
 
+
     handler_P20_Wall = space.add_collision_handler(COL_PLAYER20, COL_WALL)
     handler_P20_Wall.begin = begin_PlayerWall
     handler_P20_Wall.separate = separate_PlayerWall
@@ -223,11 +230,19 @@ def createHandlers():
     handler_P23_Wall.begin = begin_PlayerWall
     handler_P23_Wall.separate = separate_PlayerWall
 
+
     handler_Ball_Goal = space.add_collision_handler(COL_BALL, COL_GOAL)
     handler_Ball_Goal.begin = begin_BallGoal
 
     handler_Ball_Wall = space.add_collision_handler(COL_BALL, COL_WALL)
     handler_Ball_Wall.begin = begin_BallWall
+
+
+    handler_Ball_Player13 = space.add_collision_handler(COL_BALL, COL_PLAYER13)
+    handler_Ball_Player13.begin = begin_BallPlayer
+
+    handler_Ball_Player23 = space.add_collision_handler(COL_BALL, COL_PLAYER23)
+    handler_Ball_Player23.begin = begin_BallPlayer
 
 
 def resetBall():
@@ -259,6 +274,27 @@ def update_AI():
     ball.update()
     timer.update()
 
+def drawDash():
+    curCol1 = team1.column[team1.curColumnTarget]
+    dashSize1 = DASH_BLUE.get_width(), int(curCol1.sprites()[len(curCol1) - 1].body.position[1] - curCol1.sprites()[0].body.position[1]) + P1.get_height() + 20
+    scaledDash1 = pg.transform.scale(DASH_BLUE, dashSize1)
+    if curCol1.sprites()[0].fast:
+        if curCol1.sprites()[0].body.velocity[1] < 0:
+            screen.blit(scaledDash1, (curCol1.sprites()[0].body.position[0] - P1_R, curCol1.sprites()[0].body.position[1]))
+        else:
+            scaledDash1 = pg.transform.flip(scaledDash1, 0, 1)
+            screen.blit(scaledDash1, (curCol1.sprites()[0].body.position[0] - P1_R, curCol1.sprites()[0].body.position[1] - P1.get_height() - 20))
+
+    curCol2 = team2.column[team2.curColumnTarget]
+    dashSize2 = DASH_RED.get_width(), int(curCol2.sprites()[len(curCol2) - 1].body.position[1] - curCol2.sprites()[0].body.position[1]) + P2.get_height() + 20
+    scaledDash2 = pg.transform.scale(DASH_RED, dashSize2)
+    if curCol2.sprites()[0].fast:
+        if curCol2.sprites()[0].body.velocity[1] < 0:
+            screen.blit(scaledDash2, (curCol2.sprites()[0].body.position[0] - P2_R, curCol2.sprites()[0].body.position[1]))
+        else:
+            scaledDash2 = pg.transform.flip(scaledDash2, 0, 1)
+            screen.blit(scaledDash2, (curCol2.sprites()[0].body.position[0] - P2_R, curCol2.sprites()[0].body.position[1] - P2.get_height() - 20))
+
 
 def draw():
     screen.fill(GREEN)
@@ -272,6 +308,7 @@ def draw():
     for wall in wallList:
         wall.draw()
 
+
     team1.draw()
     team2.draw()
     # for player in pGroup.sprites():
@@ -279,6 +316,9 @@ def draw():
 
     # for player in pGroup.sprites():
     #     player.draw()
+
+    drawDash()
+    
     for group in listGroup:
         for player in group.sprites():
             player.draw()
