@@ -59,11 +59,11 @@ class SuperIfElseAI(IfElseAI):
             direction = 'down'
 
         useSpeedUp = False
-        if deltaY > 50:
+        if deltaY > 5:
             useSpeedUp = True
 
         # if a goal keeper, does not go outside the goal
-        if self._team.getCurIdx() == 3 and (self._ball.body.position[1] > MIDY + 120 or self._ball.body.position[1] < MIDY - 120):
+        if self._team.getCurIdx() == 3 and (self._ball.body.position[1] > MIDY + 80 or self._ball.body.position[1] < MIDY - 80):
             direction = ""
 
         return direction, useSpeedUp

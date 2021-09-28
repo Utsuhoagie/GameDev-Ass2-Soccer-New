@@ -81,7 +81,7 @@ goalGroup = pg.sprite.Group(goal1, goal2)
 wallList = [wallL, wallR, wallU, wallD]
 
 AI = IfElseAI(team2, ball)
-# AI = SuperIfElseAI(team2, ball)
+superAI = SuperIfElseAI(team2, ball)
 
 # ----- Timer -------------------------------------
 
@@ -276,6 +276,16 @@ def update_AI():
     timer.update()
     score.update()
 
+def update_SuperAI():
+    # TODO: AI version of game
+
+    team1.update()
+    superAI.update()
+    
+    ball.update()
+    timer.update()
+    score.update()
+
 def drawDash():
     curCol1 = team1.column[team1.curColumnTarget]
     dashSize1 = DASH_BLUE.get_width(), P1.get_height() + 20
@@ -393,6 +403,37 @@ def mainAI():
         update_AI()
         draw()    
 
+def mainSuperAI():
+    run = True
+    clock = pg.time.Clock()
+
+    createHandlers()
+
+    while run:
+        space.step(1/FPS)
+        clock.tick(FPS)
+
+        for event in pg.event.get():
+            if event.type == pg.QUIT:
+                pg.quit()
+                sys.exit()
+            
+            if event.type == EVENT_MENU or (event.type == pg.KEYDOWN and event.key == pg.K_ESCAPE and score.win == 0):
+                run = False
+                score.reset()
+                resetBall()
+                if event.type == EVENT_MENU:
+                    pg.time.delay(1000)
+                break
+            if event.type == EVENT_RESET or (event.type == pg.KEYDOWN and event.key == pg.K_r):
+                resetBall()
+
+        if not run:
+            break
+
+        update_SuperAI()
+        draw()    
+
 
 def menu():
     run = True
@@ -400,7 +441,8 @@ def menu():
 
     button_2P = pg.Rect(100, 300, 180, 80)
     button_AI = pg.Rect(100, 400, 180, 80)
-    btnList = [button_2P, button_AI]
+    button_SuperAI = pg.Rect(100, 500, 180, 80)
+    btnList = [button_2P, button_AI, button_SuperAI]
 
     while run:
         clock.tick(FPS)
@@ -417,6 +459,9 @@ def menu():
                 elif button_AI.collidepoint(mPos):
                     CLICK.play()
                     mainAI()
+                elif button_SuperAI.collidepoint(mPos):
+                    CLICK.play()
+                    mainSuperAI()
         
         draw_menu(btnList)
 
@@ -444,6 +489,11 @@ def draw_menu(btnList: List[pg.Rect]):
     button2PSurf = BUTTON_FONT.render("Vs. AI", 1, BLACK)
     pg.draw.rect(screen, GRAY, btnList[1])
     screen.blit(button2PSurf, (btnList[1].x + 15, btnList[1].y + 15))
+
+    # Draw vs SuperAI button
+    button2PSurf = BUTTON_FONT.render("Vs. ProAI", 1, BLACK)
+    pg.draw.rect(screen, GRAY, btnList[2])
+    screen.blit(button2PSurf, (btnList[2].x + 15, btnList[2].y + 15))
 
     pg.display.update()
 
