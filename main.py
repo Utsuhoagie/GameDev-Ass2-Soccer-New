@@ -254,8 +254,7 @@ def resetBall():
         ball.body.velocity = ball.body.velocity.scale_to_length(300)
 
     ball.shape.touchedGoal = False
-
-
+    score.win = 0
 
 
 def update():
@@ -263,16 +262,17 @@ def update():
     team2.update()
     ball.update()
     timer.update()
+    score.update()
 
 def update_AI():
     # TODO: AI version of game
 
     team1.update()
-    #team2.update()
     AI.update()
     
     ball.update()
     timer.update()
+    score.update()
 
 def drawDash():
     curCol1 = team1.column[team1.curColumnTarget]
@@ -313,11 +313,6 @@ def draw():
 
     team1.draw()
     team2.draw()
-    # for player in pGroup.sprites():
-    #     pg.draw.line(screen, BROWN, (player.body.position[0], MENU_HEIGHT), (player.body.position[0], HEIGHT), 1)
-
-    # for player in pGroup.sprites():
-    #     player.draw()
 
     drawDash()
     
@@ -332,8 +327,6 @@ def draw():
 
 
 # ----- Game states -----------------------------------------------------------------------
-
-
 
 def main2P():
     run = True
@@ -350,20 +343,22 @@ def main2P():
                 pg.quit()
                 sys.exit()
             
-            if event.type == pg.KEYDOWN and event.key == pg.K_ESCAPE:
+            if event.type == EVENT_MENU or (event.type == pg.KEYDOWN and event.key == pg.K_ESCAPE):
                 run = False
                 score.reset()
                 resetBall()
+                if event.type == EVENT_MENU:
+                    pg.time.delay(1000)
                 break
             if event.type == EVENT_RESET or (event.type == pg.KEYDOWN and event.key == pg.K_r):
                 resetBall()
-        # for sprite in pGroup.sprites():
-        #     handleInput(sprite)
+
         if not run:
             break
 
         update()
         draw()
+
 
 def mainAI():
     run = True
@@ -380,15 +375,15 @@ def mainAI():
                 pg.quit()
                 sys.exit()
             
-            if event.type == pg.KEYDOWN and event.key == pg.K_ESCAPE:
+            if event.type == EVENT_MENU or (event.type == pg.KEYDOWN and event.key == pg.K_ESCAPE):
                 run = False
                 score.reset()
                 resetBall()
+                if event.type == EVENT_MENU:
+                    pg.time.delay(1000)
                 break
             if event.type == EVENT_RESET or (event.type == pg.KEYDOWN and event.key == pg.K_r):
                 resetBall()
-        # for sprite in pGroup.sprites():
-        #     handleInput(sprite)
 
         if not run:
             break
@@ -415,8 +410,10 @@ def menu():
             if event.type == pg.MOUSEBUTTONDOWN and event.button == 1:
                 mPos = pg.mouse.get_pos()
                 if button_2P.collidepoint(mPos):
+                    CLICK.play()
                     main2P()
                 elif button_AI.collidepoint(mPos):
+                    CLICK.play()
                     mainAI()
         
         draw_menu(btnList)

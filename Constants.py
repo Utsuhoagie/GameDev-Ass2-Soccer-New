@@ -33,7 +33,9 @@ LIGHTBLUE = (22,192,240)
 # ----- Gameplay ------------------------------------
 FPS = 60
 
+WIN_COND = 1
 EVENT_RESET = pg.USEREVENT + 1
+EVENT_MENU = pg.USEREVENT + 2
 
 MAX_STAMINA = 50
 HEAL_STAMINA = 4
