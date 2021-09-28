@@ -10,7 +10,7 @@ WIDTH, HEIGHT = BG_W, BG_H + MENU_HEIGHT
 BORDER = 20
 MIDX, MIDY = BG_W/2, BG_H/2 + MENU_HEIGHT
 
-THICKNESS = 7
+THICKNESS = 15
 
 # ----- Colors --------------------------------------
 

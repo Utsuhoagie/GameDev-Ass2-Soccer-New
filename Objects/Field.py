@@ -24,7 +24,7 @@ class Goal(pg.sprite.Sprite):
         super().__init__()
         self.body = pm.Body(body_type = pm.Body.STATIC)
 
-        self.shape = pm.Segment(self.body, pointA, pointB, 2)
+        self.shape = pm.Segment(self.body, pointA, pointB, 5)
         self.shape.elasticity = 1
         self.shape.density = 1
         self.shape.collision_type = COL_GOAL
