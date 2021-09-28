@@ -1,25 +1,14 @@
+from Constants import MIDY
+from typing import List, Tuple
+from AI.IfElseAI import AIState, IfElseAI
 from math import inf
-from typing import *
 from Objects.Ball import Ball
 from Objects.Team import Team
-from enum import Enum
 import pygame as pg
 
-class AIState(Enum):
-    GO_TO_COLUMN = 0
-    MOVE_PLAYER = 1
-
-class IfElseAI:
+class SuperIfElseAI(IfElseAI):
     def __init__(self, team: Team, ball: Ball) -> None:
-        self._state = AIState.GO_TO_COLUMN
-        self._team = team
-        self._ball = ball
-
-        # 0 is the first, 3 is last
-        self._columnToGo = 0
-
-    def get_press(self):
-        pass
+        super().__init__(team, ball)
 
     def update(self):
         # execute state
@@ -35,10 +24,10 @@ class IfElseAI:
                         self._team.goTo('right')
             elif self._state == AIState.MOVE_PLAYER:
                 group = self._team.getCurrentPlayerGroup()
-                direct = self._findDirectionInGroupNearTheBall(group.sprites())
+                direct, speedup = self._findDirectionSpeedUpInGroupNearTheBall(group.sprites())
                 
                 for player in group.sprites():
-                    player.goTo(direct)
+                    player.goToFast(direct, speedup)
         else:
             group = self._team.getCurrentPlayerGroup()
 
@@ -52,9 +41,8 @@ class IfElseAI:
         if self._columnToGo != nearestColumn:
             self._columnToGo = nearestColumn
             self._state = AIState.GO_TO_COLUMN
-        
 
-    def _findDirectionInGroupNearTheBall(self, group: List[pg.sprite.Sprite]) -> str:
+    def _findDirectionSpeedUpInGroupNearTheBall(self, group: list[pg.sprite.Sprite]) -> tuple([str, bool]):
         nearestIdx = 0
         direction = ''
         deltaY = inf
@@ -69,10 +57,13 @@ class IfElseAI:
             direction = 'up'
         else:
             direction = 'down'
-        return direction
 
-    def _findNearestColumnNearTheBall(self) -> int:
-        for idx in range(0, len(self._team.column)):
-            if self._team.column[idx].sprites()[0].body.position[0] > self._ball.body.position[0]:
-                return idx
-        return 3
+        useSpeedUp = False
+        if deltaY > 50:
+            useSpeedUp = True
+
+        # if a goal keeper, does not go outside the goal
+        if self._team.getCurIdx() == 3 and (self._ball.body.position[1] > MIDY + 120 or self._ball.body.position[1] < MIDY - 120):
+            direction = ""
+
+        return direction, useSpeedUp

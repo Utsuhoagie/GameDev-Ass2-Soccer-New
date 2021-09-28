@@ -1,3 +1,4 @@
+from AI.SuperIfElseAI import SuperIfElseAI
 from AI.IfElseAI import IfElseAI
 from Objects.Team import Team
 from Objects.Player import *
@@ -80,6 +81,7 @@ goalGroup = pg.sprite.Group(goal1, goal2)
 wallList = [wallL, wallR, wallU, wallD]
 
 AI = IfElseAI(team2, ball)
+# AI = SuperIfElseAI(team2, ball)
 
 # ----- Timer -------------------------------------
 

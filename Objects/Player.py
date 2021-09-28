@@ -112,6 +112,38 @@ class Player(pg.sprite.Sprite):
 
         else:
             pVel = 0,0
+            
+        # set player's velocity
+        self.body.velocity = pVel
 
+    def goToFast(self, direction, speedup: bool):
+        pVel = self.body.velocity
+
+        if direction == 'up':
+            if not self.touchU:
+                pVel = 0,-P_SPEED
+            else:
+                pVel = 0,0
+        elif direction == 'down':
+            if not self.touchD:
+                pVel = 0,P_SPEED
+            else:
+                pVel = 0,0
+
+        else:
+            pVel = 0,0
+
+        # speed up
+        if speedup and self.stamina >= 0 and pVel != (0,0):
+            self.fast = True
+            self.heldFast = True
+        else:
+            self.heldFast = False
+            self.fast = False
+
+        if self.fast:
+            pVel = pVel[0] * P_SPEED_MULTIPLIER, pVel[1] * P_SPEED_MULTIPLIER
+            self.stamina -= SPEND_STAMINA
+            
         # set player's velocity
         self.body.velocity = pVel
