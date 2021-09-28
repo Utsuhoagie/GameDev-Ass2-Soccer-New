@@ -343,7 +343,7 @@ def main2P():
                 pg.quit()
                 sys.exit()
             
-            if event.type == EVENT_MENU or (event.type == pg.KEYDOWN and event.key == pg.K_ESCAPE):
+            if event.type == EVENT_MENU or (event.type == pg.KEYDOWN and event.key == pg.K_ESCAPE and score.win == 0):
                 run = False
                 score.reset()
                 resetBall()
@@ -375,7 +375,7 @@ def mainAI():
                 pg.quit()
                 sys.exit()
             
-            if event.type == EVENT_MENU or (event.type == pg.KEYDOWN and event.key == pg.K_ESCAPE):
+            if event.type == EVENT_MENU or (event.type == pg.KEYDOWN and event.key == pg.K_ESCAPE and score.win == 0):
                 run = False
                 score.reset()
                 resetBall()

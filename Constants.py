@@ -33,7 +33,7 @@ LIGHTBLUE = (22,192,240)
 # ----- Gameplay ------------------------------------
 FPS = 60
 
-WIN_COND = 1
+WIN_COND = 5
 EVENT_RESET = pg.USEREVENT + 1
 EVENT_MENU = pg.USEREVENT + 2
 
