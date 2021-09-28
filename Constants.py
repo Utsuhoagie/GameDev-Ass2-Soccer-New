@@ -10,7 +10,7 @@ WIDTH, HEIGHT = BG_W, BG_H + MENU_HEIGHT
 BORDER = 20
 MIDX, MIDY = BG_W/2, BG_H/2 + MENU_HEIGHT
 
-THICKNESS = 7
+THICKNESS = 15
 
 # ----- Colors --------------------------------------
 
@@ -33,7 +33,9 @@ LIGHTBLUE = (22,192,240)
 # ----- Gameplay ------------------------------------
 FPS = 60
 
+WIN_COND = 5
 EVENT_RESET = pg.USEREVENT + 1
+EVENT_MENU = pg.USEREVENT + 2
 
 MAX_STAMINA = 50
 HEAL_STAMINA = 4

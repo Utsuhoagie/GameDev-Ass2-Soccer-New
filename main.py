@@ -53,10 +53,10 @@ p2_62 = Player(WIDTH - 550, MIDY, 2, COL_PLAYER20)
 p2_63 = Player(WIDTH - 550, MIDY + 120, 2, COL_PLAYER20)
 
 
-wallL = Wall((BORDER, BORDER + MENU_HEIGHT), (BORDER, HEIGHT - BORDER), 1)
-wallR = Wall((WIDTH - BORDER, BORDER + MENU_HEIGHT), (WIDTH - BORDER, HEIGHT - BORDER), 2)
-wallU = Wall((BORDER, BORDER + MENU_HEIGHT), (WIDTH - BORDER, BORDER + MENU_HEIGHT), 3)
-wallD = Wall((BORDER, HEIGHT - BORDER), (WIDTH - BORDER, HEIGHT - BORDER), 4)
+wallL = Wall((BORDER - THICKNESS, BORDER + MENU_HEIGHT - THICKNESS), (BORDER - THICKNESS, HEIGHT - BORDER + THICKNESS), 1)
+wallR = Wall((WIDTH - BORDER + THICKNESS, BORDER + MENU_HEIGHT - THICKNESS), (WIDTH - BORDER + THICKNESS, HEIGHT - BORDER + THICKNESS), 2)
+wallU = Wall((BORDER - THICKNESS, BORDER + MENU_HEIGHT - THICKNESS//2), (WIDTH - BORDER + THICKNESS, BORDER + MENU_HEIGHT - THICKNESS), 3)
+wallD = Wall((BORDER - THICKNESS, HEIGHT - BORDER + THICKNESS), (WIDTH - BORDER + THICKNESS, HEIGHT - BORDER + THICKNESS), 4)
 
 goal1 = Goal((BORDER + 5, MIDY - 80), (BORDER + 5, MIDY + 80), 1)
 goal2 = Goal((WIDTH - BORDER - 5, MIDY - 80), (WIDTH - BORDER - 5, MIDY + 80), 2)
@@ -256,8 +256,7 @@ def resetBall():
         ball.body.velocity = ball.body.velocity.scale_to_length(300)
 
     ball.shape.touchedGoal = False
-
-
+    score.win = 0
 
 
 def update():
@@ -265,16 +264,17 @@ def update():
     team2.update()
     ball.update()
     timer.update()
+    score.update()
 
 def update_AI():
     # TODO: AI version of game
 
     team1.update()
-    #team2.update()
     AI.update()
     
     ball.update()
     timer.update()
+    score.update()
 
 def drawDash():
     curCol1 = team1.column[team1.curColumnTarget]
@@ -315,11 +315,6 @@ def draw():
 
     team1.draw()
     team2.draw()
-    # for player in pGroup.sprites():
-    #     pg.draw.line(screen, BROWN, (player.body.position[0], MENU_HEIGHT), (player.body.position[0], HEIGHT), 1)
-
-    # for player in pGroup.sprites():
-    #     player.draw()
 
     drawDash()
     
@@ -334,8 +329,6 @@ def draw():
 
 
 # ----- Game states -----------------------------------------------------------------------
-
-
 
 def main2P():
     run = True
@@ -352,20 +345,22 @@ def main2P():
                 pg.quit()
                 sys.exit()
             
-            if event.type == pg.KEYDOWN and event.key == pg.K_ESCAPE:
+            if event.type == EVENT_MENU or (event.type == pg.KEYDOWN and event.key == pg.K_ESCAPE and score.win == 0):
                 run = False
                 score.reset()
                 resetBall()
+                if event.type == EVENT_MENU:
+                    pg.time.delay(1000)
                 break
             if event.type == EVENT_RESET or (event.type == pg.KEYDOWN and event.key == pg.K_r):
                 resetBall()
-        # for sprite in pGroup.sprites():
-        #     handleInput(sprite)
+
         if not run:
             break
 
         update()
         draw()
+
 
 def mainAI():
     run = True
@@ -382,15 +377,15 @@ def mainAI():
                 pg.quit()
                 sys.exit()
             
-            if event.type == pg.KEYDOWN and event.key == pg.K_ESCAPE:
+            if event.type == EVENT_MENU or (event.type == pg.KEYDOWN and event.key == pg.K_ESCAPE and score.win == 0):
                 run = False
                 score.reset()
                 resetBall()
+                if event.type == EVENT_MENU:
+                    pg.time.delay(1000)
                 break
             if event.type == EVENT_RESET or (event.type == pg.KEYDOWN and event.key == pg.K_r):
                 resetBall()
-        # for sprite in pGroup.sprites():
-        #     handleInput(sprite)
 
         if not run:
             break
@@ -417,8 +412,10 @@ def menu():
             if event.type == pg.MOUSEBUTTONDOWN and event.button == 1:
                 mPos = pg.mouse.get_pos()
                 if button_2P.collidepoint(mPos):
+                    CLICK.play()
                     main2P()
                 elif button_AI.collidepoint(mPos):
+                    CLICK.play()
                     mainAI()
         
         draw_menu(btnList)

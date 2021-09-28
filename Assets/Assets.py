@@ -4,13 +4,16 @@ pg.init()
 
 # ----- Fonts ----------------------
 
-FONT = pg.font.SysFont("consolas", 48)
+FONT = pg.font.SysFont("consolas", 42)
+WIN_COND_FONT = pg.font.SysFont("consolas", 30)
 TITLE_FONT = pg.font.Font(os.path.join("Assets","SF Atarian System.ttf"), 72)
 BUTTON_FONT = pg.font.Font(os.path.join("Assets","SF Atarian System.ttf"), 50)
 
 # ----- Audio ----------------------
+CLICK = pg.mixer.Sound(os.path.join("Assets","Sounds","click.ogg"))
 BOUNCE = pg.mixer.Sound(os.path.join("Assets","Sounds","bounce.ogg"))
 GOAL = pg.mixer.Sound(os.path.join("Assets","Sounds","goal.ogg"))
+
 # ----- Sprites --------------------
 
 # Background
