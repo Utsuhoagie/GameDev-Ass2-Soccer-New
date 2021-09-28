@@ -17,7 +17,7 @@ def randomBallVel() -> tuple:
     return (x,y)
 
 
-ball = Ball(MIDX, MIDY, randomBallVel())
+ball = Ball(MIDX, MIDY, randomBallVel())            # BORDER - 2 + 100, MIDY - 150, (-150,150))
 
 score = ScoreController()
 
@@ -57,8 +57,8 @@ wallR = Wall((WIDTH - BORDER + THICKNESS + 4, BORDER + MENU_HEIGHT - THICKNESS),
 wallU = Wall((BORDER - THICKNESS - 4, BORDER + MENU_HEIGHT - THICKNESS), (WIDTH - BORDER + THICKNESS + 4, BORDER + MENU_HEIGHT - THICKNESS), 3)
 wallD = Wall((BORDER - THICKNESS - 4, HEIGHT - BORDER + THICKNESS), (WIDTH - BORDER + THICKNESS + 4, HEIGHT - BORDER + THICKNESS), 4)
 
-goal1 = Goal((BORDER - 2, MIDY - 70), (BORDER - 2, MIDY + 70), 1)
-goal2 = Goal((WIDTH - BORDER + 2, MIDY - 70), (WIDTH - BORDER + 2, MIDY + 70), 2)
+goal1 = Goal((BORDER - 2, MIDY - 48), (BORDER - 2, MIDY + 48), 1)
+goal2 = Goal((WIDTH - BORDER + 2, MIDY - 48), (WIDTH - BORDER + 2, MIDY + 48), 2)
 
 
 pGroup10 = pg.sprite.Group(p1_61, p1_62, p1_63)
